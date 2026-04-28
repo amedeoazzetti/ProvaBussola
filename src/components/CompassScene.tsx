@@ -34,14 +34,12 @@ function SceneRig({ activeDirection }: SceneRigProps) {
 
 export function CompassScene() {
   const [activeDirection, setActiveDirection] = useState<Direction>('center');
-  const layout = directionLayout[activeDirection];
-  const ringRadius = layout.buttonRingRadius;
 
   const buttons = [
-    { direction: 'north', dx: 0, dy: -1 },
-    { direction: 'south', dx: 0, dy: 1 },
-    { direction: 'east', dx: 1, dy: 0 },
-    { direction: 'west', dx: -1, dy: 0 },
+    { direction: 'north', className: 'left-1/2 top-6 -translate-x-1/2' },
+    { direction: 'south', className: 'bottom-6 left-1/2 -translate-x-1/2' },
+    { direction: 'east', className: 'right-6 top-1/2 -translate-y-1/2' },
+    { direction: 'west', className: 'left-6 top-1/2 -translate-y-1/2' },
   ] as const;
 
   return (
@@ -65,25 +63,17 @@ export function CompassScene() {
 
       <DirectionContent activeDirection={activeDirection} />
 
-      <div
-        className="pointer-events-none absolute inset-0 z-20"
-        style={{
-          ['--anchor-x' as string]: `${layout.compassAnchor.x * 100}%`,
-          ['--anchor-y' as string]: `${layout.compassAnchor.y * 100}%`,
-        }}
-      >
-        {buttons.map(({ direction, dx, dy }) => (
+      <div className="pointer-events-none absolute inset-0 z-20">
+        {buttons.map(({ direction, className }) => (
           <DirectionButton
             key={direction}
             direction={direction}
             activeDirection={activeDirection}
             onClick={(next) => setActiveDirection(next)}
             style={{
-              left: `calc(var(--anchor-x) + ${dx * ringRadius}px)`,
-              top: `calc(var(--anchor-y) + ${dy * ringRadius}px)`,
-              transform: 'translate(-50%, -50%)',
               pointerEvents: 'auto',
             }}
+            className={className}
           />
         ))}
       </div>
@@ -103,9 +93,6 @@ export function CompassScene() {
         </motion.button>
       )}
 
-      <div className="pointer-events-none absolute bottom-4 left-1/2 z-10 -translate-x-1/2 rounded-full border border-white/10 bg-black/35 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-amber-50/70 md:bottom-6">
-        {activeDirection === 'center' ? 'Choose a direction' : `Facing ${activeDirection}`}
-      </div>
     </main>
   );
 }
