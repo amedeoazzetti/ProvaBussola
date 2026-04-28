@@ -5,7 +5,6 @@ import { useMemo, useRef } from 'react';
 import { Group, MeshStandardMaterial, Vector3 } from 'three';
 import { useFrame } from '@react-three/fiber';
 import { animationConfig } from '@/lib/animationConfig';
-import type { Direction } from '@/lib/compassConfig';
 import { CompassNeedle } from './CompassNeedle';
 
 type CompassModelProps = {

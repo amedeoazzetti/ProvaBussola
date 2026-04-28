@@ -10,7 +10,7 @@ const northMaterial = new MeshStandardMaterial({
   emissiveIntensity: 0.25,
 });
 
-const southMaterial = new MeshStandardMaterial({
+const brassNeedleMaterial = new MeshStandardMaterial({
   color: '#bfa473',
   metalness: 0.75,
   roughness: 0.22,
@@ -22,10 +22,7 @@ export function CompassNeedle() {
       <mesh position={[0, 0.82, 0.19]} material={northMaterial}>
         <coneGeometry args={[0.11, 1.8, 4]} />
       </mesh>
-      <mesh position={[0, -0.42, 0.18]} material={southMaterial}>
-        <boxGeometry args={[0.06, 0.9, 0.03]} />
-      </mesh>
-      <mesh position={[0, 0, 0.22]} material={southMaterial}>
+      <mesh position={[0, 0, 0.22]} material={brassNeedleMaterial}>
         <cylinderGeometry args={[0.22, 0.22, 0.13, 28]} />
       </mesh>
     </group>
