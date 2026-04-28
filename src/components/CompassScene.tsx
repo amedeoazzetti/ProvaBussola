@@ -1,7 +1,7 @@
 'use client';
 
 import { Canvas, useThree } from '@react-three/fiber';
-import { Float } from '@react-three/drei';
+import { Environment, Float, Sparkles } from '@react-three/drei';
 import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Vector3 } from 'three';
@@ -9,7 +9,9 @@ import { CompassModel } from './CompassModel';
 import { DirectionButton } from './DirectionButton';
 import { DirectionContent } from './DirectionContent';
 import { SceneCamera } from './SceneCamera';
+import { AtmosphericBackground } from './AtmosphericBackground';
 import { directionLayout, type Direction } from '@/lib/compassConfig';
+import { compassVisual } from '@/lib/visualConfig';
 
 type SceneRigProps = {
   activeDirection: Direction;
@@ -26,7 +28,7 @@ function SceneRig({ activeDirection }: SceneRigProps) {
   }, [target.compassAnchor.x, target.compassAnchor.y, viewport.height, viewport.width]);
 
   return (
-    <Float speed={0.6} rotationIntensity={0.12} floatIntensity={0.14}>
+    <Float speed={0.52} rotationIntensity={0.06} floatIntensity={0.12}>
       <CompassModel targetPosition={targetPosition} targetScale={target.compassScale} />
     </Float>
   );
@@ -44,19 +46,24 @@ export function CompassScene() {
 
   return (
     <main className="relative h-screen w-full overflow-hidden">
+      <AtmosphericBackground activeDirection={activeDirection} />
+
       <div className="absolute inset-0 z-0">
         <Canvas shadows dpr={[1, 2]} gl={{ antialias: true, alpha: true }}>
           <SceneCamera />
-          <ambientLight intensity={0.45} />
+          <ambientLight intensity={compassVisual.light.ambient} color="#dce8ff" />
           <directionalLight
             castShadow
-            intensity={1.25}
-            color="#fff2d0"
-            position={[4, 5, 6]}
+            intensity={compassVisual.light.key}
+            color="#ffe8ba"
+            position={[5, 6, 7]}
             shadow-mapSize-width={1024}
             shadow-mapSize-height={1024}
           />
-          <pointLight position={[-4, -3, 4]} intensity={0.65} color="#6c8ec5" />
+          <pointLight position={[-5, -2, 5]} intensity={compassVisual.light.fill} color="#6ea0d9" />
+          <pointLight position={[4, -3, 4]} intensity={compassVisual.light.rim} color="#d6945f" />
+          <Environment preset="night" />
+          <Sparkles count={70} size={1.8} speed={0.08} scale={[14, 9, 3]} opacity={0.12} color="#e9f1ff" />
           <SceneRig activeDirection={activeDirection} />
         </Canvas>
       </div>
@@ -92,7 +99,6 @@ export function CompassScene() {
           ← Indietro
         </motion.button>
       )}
-
     </main>
   );
 }
