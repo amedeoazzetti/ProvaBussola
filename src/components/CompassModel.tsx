@@ -117,18 +117,18 @@ export function CompassModel({ targetPosition, targetScale }: CompassModelProps)
       </mesh>
 
       <mesh position={[0, 0, 0.17]} material={brushedGoldMaterial}>
-        <torusGeometry args={[1.82, 0.04, 16, 180]} />
+        <cylinderGeometry args={[1.84, 1.78, 0.04, 120, 1, true]} />
       </mesh>
 
       <mesh position={[0, 0, 0.08]} material={dialMaterial} receiveShadow>
         <cylinderGeometry args={[1.78, 1.78, 0.2, 120]} />
       </mesh>
 
-      <mesh position={[0, 0, 0.19]} material={brushedGoldMaterial}>
-        <torusGeometry args={[1.18, 0.018, 12, 120]} />
+      <mesh position={[0, 0, 0.202]} material={brushedGoldMaterial}>
+        <ringGeometry args={[1.16, 1.18, 120]} />
       </mesh>
-      <mesh position={[0, 0, 0.195]} material={brushedGoldMaterial}>
-        <torusGeometry args={[0.82, 0.012, 10, 96]} />
+      <mesh position={[0, 0, 0.203]} material={brushedGoldMaterial}>
+        <ringGeometry args={[0.808, 0.82, 96]} />
       </mesh>
 
       <mesh position={[0, 0, 0.205]} material={bronzeDarkMaterial}>
