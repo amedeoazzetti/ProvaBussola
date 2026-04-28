@@ -112,8 +112,8 @@ export function CompassModel({ targetPosition, targetScale }: CompassModelProps)
         <cylinderGeometry args={[2.34, 2.26, 0.42, 128]} />
       </mesh>
 
-      <mesh position={[0, 0, 0.12]} material={bronzeMaterial} castShadow>
-        <torusGeometry args={[2.05, 0.22, 40, 220]} />
+      <mesh position={[0, 0, 0.11]} material={bronzeMaterial} castShadow receiveShadow>
+        <cylinderGeometry args={[2.18, 2.04, 0.24, 128, 1, true]} />
       </mesh>
 
       <mesh position={[0, 0, 0.17]} material={brushedGoldMaterial}>

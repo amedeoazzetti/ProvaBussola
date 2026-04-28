@@ -3,11 +3,11 @@
 import { MeshStandardMaterial } from 'three';
 
 const rubyMaterial = new MeshStandardMaterial({
-  color: '#a00f18',
-  metalness: 0.62,
-  roughness: 0.2,
-  emissive: '#2d0608',
-  emissiveIntensity: 0.28,
+  color: '#d1141f',
+  metalness: 0.55,
+  roughness: 0.18,
+  emissive: '#3a0408',
+  emissiveIntensity: 0.36,
 });
 
 const brassMaterial = new MeshStandardMaterial({

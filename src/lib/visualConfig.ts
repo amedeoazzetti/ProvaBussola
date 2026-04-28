@@ -29,8 +29,8 @@ export const backgroundByDirection: Record<Direction, { gradient: string; glow: 
 };
 
 export const compassVisual = {
-  tiltX: -0.24,
-  tiltY: 0.04,
+  tiltX: -0.04,
+  tiltY: 0.01,
   light: {
     ambient: 0.5,
     key: 1.3,
