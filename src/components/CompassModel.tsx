@@ -13,34 +13,53 @@ type CompassModelProps = {
   targetScale: number;
 };
 
-const bronzeMaterial = new MeshStandardMaterial({
-  color: '#6a4a2b',
-  metalness: 0.9,
-  roughness: 0.34,
+const RADIUS = 2.4;
+
+const Z = {
+  base: 0,
+  baseRim: 0.012,
+  dial: 0.024,
+  rings: 0.034,
+  ticks: 0.04,
+  letters: 0.05,
+  needle: 0.07,
+  pin: 0.11,
+};
+
+const baseMaterial = new MeshStandardMaterial({
+  color: '#5a3d22',
+  metalness: 0.78,
+  roughness: 0.42,
 });
 
-const bronzeDarkMaterial = new MeshStandardMaterial({
-  color: '#2d2013',
-  metalness: 0.86,
-  roughness: 0.48,
-});
-
-const brushedGoldMaterial = new MeshStandardMaterial({
-  color: '#b99a62',
-  metalness: 0.85,
-  roughness: 0.24,
+const baseRimMaterial = new MeshStandardMaterial({
+  color: '#8a6a3c',
+  metalness: 0.88,
+  roughness: 0.3,
 });
 
 const dialMaterial = new MeshStandardMaterial({
-  color: '#111823',
-  metalness: 0.25,
-  roughness: 0.68,
+  color: '#1b2535',
+  metalness: 0.2,
+  roughness: 0.72,
+});
+
+const goldMaterial = new MeshStandardMaterial({
+  color: '#c5a368',
+  metalness: 0.85,
+  roughness: 0.26,
 });
 
 const ivoryMaterial = new MeshStandardMaterial({
-  color: '#dcc9a3',
-  metalness: 0.5,
-  roughness: 0.32,
+  color: '#e7d6a8',
+  metalness: 0.35,
+  roughness: 0.45,
+});
+
+const ivoryDimMaterial = new MeshStandardMaterial({
+  color: '#a99366',
+  metalness: 0.4,
+  roughness: 0.5,
 });
 
 export function CompassModel({ targetPosition, targetScale }: CompassModelProps) {
@@ -55,13 +74,14 @@ export function CompassModel({ targetPosition, targetScale }: CompassModelProps)
     () =>
       Array.from({ length: 120 }, (_, i) => {
         const angle = (Math.PI * 2 * i) / 120;
-        const cardinal = i % 30 === 0;
-        const major = i % 10 === 0;
+        const isCardinal = i % 30 === 0;
+        const isMajor = i % 10 === 0;
         return {
           angle,
-          width: cardinal ? 0.05 : major ? 0.03 : 0.016,
-          length: cardinal ? 0.38 : major ? 0.22 : 0.12,
-          y: cardinal ? 1.58 : major ? 1.55 : 1.54,
+          width: isCardinal ? 0.045 : isMajor ? 0.028 : 0.014,
+          length: isCardinal ? 0.32 : isMajor ? 0.2 : 0.1,
+          radial: RADIUS - 0.22,
+          material: isCardinal ? ivoryMaterial : isMajor ? ivoryMaterial : ivoryDimMaterial,
         };
       }),
     [],
@@ -69,12 +89,12 @@ export function CompassModel({ targetPosition, targetScale }: CompassModelProps)
 
   const rivets = useMemo(
     () =>
-      Array.from({ length: 24 }, (_, i) => {
-        const angle = (Math.PI * 2 * i) / 24;
+      Array.from({ length: 16 }, (_, i) => {
+        const angle = (Math.PI * 2 * i) / 16;
         return {
-          x: Math.sin(angle) * 2.03,
-          y: Math.cos(angle) * 2.03,
           angle,
+          x: Math.sin(angle) * (RADIUS - 0.06),
+          y: Math.cos(angle) * (RADIUS - 0.06),
         };
       }),
     [],
@@ -108,65 +128,81 @@ export function CompassModel({ targetPosition, targetScale }: CompassModelProps)
 
   return (
     <group ref={rootRef} rotation={[compassVisual.tiltX, compassVisual.tiltY, 0]} scale={1}>
-      <mesh material={bronzeDarkMaterial} receiveShadow castShadow>
-        <cylinderGeometry args={[2.34, 2.26, 0.42, 128]} />
+      <mesh position={[0, 0, Z.base]} material={baseMaterial} receiveShadow>
+        <circleGeometry args={[RADIUS, 128]} />
       </mesh>
 
-      <mesh position={[0, 0, 0.11]} material={bronzeMaterial} castShadow receiveShadow>
-        <cylinderGeometry args={[2.18, 2.04, 0.24, 128, 1, true]} />
+      <mesh position={[0, 0, Z.baseRim]} material={baseRimMaterial}>
+        <ringGeometry args={[RADIUS - 0.14, RADIUS - 0.02, 128]} />
       </mesh>
 
-      <mesh position={[0, 0, 0.17]} material={brushedGoldMaterial}>
-        <cylinderGeometry args={[1.84, 1.78, 0.04, 120, 1, true]} />
+      <mesh position={[0, 0, Z.baseRim + 0.002]} material={goldMaterial}>
+        <ringGeometry args={[RADIUS - 0.04, RADIUS - 0.02, 128]} />
       </mesh>
 
-      <mesh position={[0, 0, 0.08]} material={dialMaterial} receiveShadow>
-        <cylinderGeometry args={[1.78, 1.78, 0.2, 120]} />
+      <mesh position={[0, 0, Z.dial]} material={dialMaterial} receiveShadow>
+        <circleGeometry args={[RADIUS - 0.18, 128]} />
       </mesh>
 
-      <mesh position={[0, 0, 0.202]} material={brushedGoldMaterial}>
-        <ringGeometry args={[1.16, 1.18, 120]} />
+      <mesh position={[0, 0, Z.rings]} material={goldMaterial}>
+        <ringGeometry args={[RADIUS - 0.2, RADIUS - 0.185, 128]} />
       </mesh>
-      <mesh position={[0, 0, 0.203]} material={brushedGoldMaterial}>
-        <ringGeometry args={[0.808, 0.82, 96]} />
+      <mesh position={[0, 0, Z.rings]} material={goldMaterial}>
+        <ringGeometry args={[1.18, 1.195, 120]} />
+      </mesh>
+      <mesh position={[0, 0, Z.rings]} material={goldMaterial}>
+        <ringGeometry args={[0.78, 0.79, 96]} />
       </mesh>
 
-      <mesh position={[0, 0, 0.205]} material={bronzeDarkMaterial}>
-        <boxGeometry args={[0.04, 3.2, 0.015]} />
+      <mesh position={[0, 0, Z.ticks]} material={ivoryDimMaterial}>
+        <boxGeometry args={[0.018, (RADIUS - 0.22) * 2, 0.005]} />
       </mesh>
-      <mesh position={[0, 0, 0.205]} rotation={[0, 0, Math.PI / 2]} material={bronzeDarkMaterial}>
-        <boxGeometry args={[0.04, 3.2, 0.015]} />
+      <mesh position={[0, 0, Z.ticks]} rotation={[0, 0, Math.PI / 2]} material={ivoryDimMaterial}>
+        <boxGeometry args={[0.018, (RADIUS - 0.22) * 2, 0.005]} />
+      </mesh>
+      <mesh position={[0, 0, Z.ticks]} rotation={[0, 0, Math.PI / 4]} material={ivoryDimMaterial}>
+        <boxGeometry args={[0.01, (RADIUS - 0.22) * 2 * 0.92, 0.005]} />
+      </mesh>
+      <mesh position={[0, 0, Z.ticks]} rotation={[0, 0, -Math.PI / 4]} material={ivoryDimMaterial}>
+        <boxGeometry args={[0.01, (RADIUS - 0.22) * 2 * 0.92, 0.005]} />
       </mesh>
 
       {degreeMarkers.map((marker) => (
         <group key={marker.angle} rotation={[0, 0, marker.angle]}>
-          <mesh position={[0, marker.y, 0.2]} material={ivoryMaterial}>
-            <boxGeometry args={[marker.width, marker.length, 0.03]} />
+          <mesh
+            position={[0, marker.radial - marker.length / 2, Z.ticks]}
+            material={marker.material}
+          >
+            <boxGeometry args={[marker.width, marker.length, 0.006]} />
           </mesh>
         </group>
       ))}
 
       {rivets.map((rivet) => (
-        <mesh key={rivet.angle} position={[rivet.x, rivet.y, 0.24]} material={brushedGoldMaterial} castShadow>
-          <cylinderGeometry args={[0.035, 0.035, 0.04, 14]} />
+        <mesh
+          key={rivet.angle}
+          position={[rivet.x, rivet.y, Z.baseRim + 0.004]}
+          material={goldMaterial}
+        >
+          <circleGeometry args={[0.028, 18]} />
         </mesh>
       ))}
 
-      <group position={[0, 0, 0.25]}>
+      <group position={[0, 0, Z.letters]}>
         {([
-          ['N', [0, 1.37, 0], '#ecd7a8'],
-          ['E', [1.37, 0, 0], '#dbc9a0'],
-          ['S', [0, -1.37, 0], '#dbc9a0'],
-          ['W', [-1.37, 0, 0], '#dbc9a0'],
-          ['NE', [0.95, 0.95, 0], '#b8a684'],
-          ['SE', [0.95, -0.95, 0], '#b8a684'],
-          ['SW', [-0.95, -0.95, 0], '#b8a684'],
-          ['NW', [-0.95, 0.95, 0], '#b8a684'],
-        ] as const).map(([label, pos, color]) => (
+          ['N', [0, RADIUS - 0.46, 0], '#f1deab', 0.32],
+          ['E', [RADIUS - 0.46, 0, 0], '#dfca97', 0.28],
+          ['S', [0, -(RADIUS - 0.46), 0], '#dfca97', 0.28],
+          ['W', [-(RADIUS - 0.46), 0, 0], '#dfca97', 0.28],
+          ['NE', [1.04, 1.04, 0], '#b8a275', 0.12],
+          ['SE', [1.04, -1.04, 0], '#b8a275', 0.12],
+          ['SW', [-1.04, -1.04, 0], '#b8a275', 0.12],
+          ['NW', [-1.04, 1.04, 0], '#b8a275', 0.12],
+        ] as const).map(([label, pos, color, fontSize]) => (
           <Text
             key={label}
             position={pos}
-            fontSize={label.length === 1 ? 0.27 : 0.11}
+            fontSize={fontSize}
             color={color}
             anchorX="center"
             anchorY="middle"
@@ -177,15 +213,20 @@ export function CompassModel({ targetPosition, targetScale }: CompassModelProps)
         ))}
       </group>
 
-      <group ref={needlePivotRef}>
+      <group ref={needlePivotRef} position={[0, 0, Z.needle]}>
         <CompassNeedle />
       </group>
 
-      <mesh position={[0, 0, 0.35]} material={brushedGoldMaterial} castShadow>
-        <cylinderGeometry args={[0.14, 0.14, 0.12, 28]} />
+      <mesh
+        position={[0, 0, Z.pin]}
+        rotation={[Math.PI / 2, 0, 0]}
+        material={goldMaterial}
+        castShadow
+      >
+        <cylinderGeometry args={[0.11, 0.13, 0.04, 32]} />
       </mesh>
-      <mesh position={[0, 0, 0.41]} material={bronzeMaterial}>
-        <sphereGeometry args={[0.08, 20, 20]} />
+      <mesh position={[0, 0, Z.pin + 0.022]} material={baseMaterial}>
+        <circleGeometry args={[0.05, 24]} />
       </mesh>
     </group>
   );
