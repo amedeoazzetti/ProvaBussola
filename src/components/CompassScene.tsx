@@ -66,21 +66,12 @@ export function CompassScene() {
       <DirectionContent activeDirection={activeDirection} />
 
       <div
-        className="absolute inset-0 z-20"
+        className="pointer-events-none absolute inset-0 z-20"
         style={{
           ['--anchor-x' as string]: `${layout.compassAnchor.x * 100}%`,
           ['--anchor-y' as string]: `${layout.compassAnchor.y * 100}%`,
         }}
       >
-        <motion.button
-          type="button"
-          onClick={() => setActiveDirection('center')}
-          className="absolute left-[var(--anchor-x)] top-[var(--anchor-y)] z-20 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/15 bg-black/45 px-4 py-1 text-xs uppercase tracking-[0.18em] text-amber-50/85 backdrop-blur-sm transition hover:border-white/30"
-          whileTap={{ scale: 0.96 }}
-        >
-          Reset
-        </motion.button>
-
         {buttons.map(({ direction, dx, dy }) => (
           <DirectionButton
             key={direction}
@@ -91,10 +82,26 @@ export function CompassScene() {
               left: `calc(var(--anchor-x) + ${dx * ringRadius}px)`,
               top: `calc(var(--anchor-y) + ${dy * ringRadius}px)`,
               transform: 'translate(-50%, -50%)',
+              pointerEvents: 'auto',
             }}
           />
         ))}
       </div>
+
+      {activeDirection !== 'center' && (
+        <motion.button
+          type="button"
+          aria-label="Torna alla vista centrale"
+          onClick={() => setActiveDirection('center')}
+          className="absolute left-4 top-4 z-30 rounded-full border border-amber-100/45 bg-black/55 px-4 py-2 text-xs font-medium uppercase tracking-[0.18em] text-amber-50/90 backdrop-blur-sm transition hover:border-amber-100/80 hover:bg-black/70 md:left-6 md:top-6"
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          whileTap={{ scale: 0.96 }}
+        >
+          ← Indietro
+        </motion.button>
+      )}
 
       <div className="pointer-events-none absolute bottom-4 left-1/2 z-10 -translate-x-1/2 rounded-full border border-white/10 bg-black/35 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-amber-50/70 md:bottom-6">
         {activeDirection === 'center' ? 'Choose a direction' : `Facing ${activeDirection}`}
