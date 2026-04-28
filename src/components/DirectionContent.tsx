@@ -5,6 +5,8 @@ import { directionContent, directionLayout, type Direction } from '@/lib/compass
 import { animationConfig } from '@/lib/animationConfig';
 
 export function DirectionContent({ activeDirection }: { activeDirection: Direction }) {
+  if (activeDirection === 'center') return null;
+
   const content = directionContent[activeDirection];
   const layout = directionLayout[activeDirection];
 
